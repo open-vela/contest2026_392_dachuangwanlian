@@ -1,0 +1,64 @@
+Xiaomi vela (M1,bes1600ep,1600)
+# git拉代码
+repo init -u ssh://p-wangyulong8@partner-gerrit.mioffice.cn:29418/velaos/manifest -b dev -m vela-bes-m1.xml --repo-url=https://mirrors.tuna.tsinghua.edu.cn/git/git-repo
+repo sync -c
+repo start dev --all
+git checkout .
+
+# 编译Sensor Hub (sensor hub如果打包在M55 BIN里,需要先编译sensor hub)
+./build.sh vendor/bes/boards/best1600_ep/configs/sensor -j
+# 编译M55
+./build.sh vendor/bes/boards/best1600_ep/configs/ota -j
+./build.sh vendor/bes/boards/best1600_ep/configs/ap -j
+# 编译BTH
+./build.sh vendor/bes/boards/best1600_ep/configs/cp -j
+# 编译HIFI4(dsp)
+#   HIFI4编译,工具链需要license,所以不能直接用xiaomi仓库里的prebuild下的clang,HIFI4编译环境参考 http://172.16.40.3/dokuwiki/doku.php?id=1600_m1_doc_sbc_aac_on_hifi4#%E5%AE%89%E8%A3%85hfi4%E7%8E%AF%E5%A2%83
+#   工具链安装后,导出路径到PATH,build.sh后续到处prebuild的clang到PATH时候,会优先用我们自己导出的
+./build.sh vendor/bes/boards/best_hifi4/configs/nsh -j
+
+Windows:
+# 下载M55
+D:\work\tools\dldtool.exe 5 D:\work\tools\programmer.bin \\wsl$\Ubuntu-20.04\home\test01\xiaomi_m1\out\best1600_ep\cp\nuttx\vela_ota.bin
+D:\work\tools\dldtool.exe 5 D:\work\tools\programmer.bin -m 0x2C300000/0xBE57EC1C \\wsl$\Ubuntu-20.04\home\test01\xiaomi_m1\out\best1600_ep\ap\nuttx\vela_ap.bin
+# 下载BTH
+D:\work\tools\dldtool.exe 5 D:\work\tools\programmer.bin \\wsl$\Ubuntu-20.04\home\test01\xiaomi_m1\out\best1600_ep\cp\nuttx\vela_cp.bin
+# 下载HFII4(dsp)
+D:\work\tools\dldtool.exe 5 D:\work\tools\programmer.bin \\wsl$\Ubuntu-20.04\home\test01\xiaomi_m1\out\bes_hifi4\nsh\nuttx\vela_audio.bin
+# 下载Sensor Hub
+D:\work\tools\dldtool.exe 5 D:\work\tools\programmer.bin \\wsl$\Ubuntu-20.04\home\test01\xiaomi_m1\out\best1600_ep\sensor\nuttx\vela_sensor.bin
+
+Linux:
+# Download M55
+./dldtool /dev/ttyUSBx programmer.bin vela_ota.bin
+./dldtool /dev/ttyUSBx programmer.bin -m 0x2C300000/0xBE57EC1C vela_ap.bin
+# Download BTH
+./dldtool /dev/ttyUSBx programmer.bin vela_cp.bin
+# Download HFII4(dsp)
+./dldtool /dev/ttyUSBx programmer.bin vela_audio.bin
+# Download Sensor Hub
+./dldtool /dev/ttyUSBx programmer.bin vela_sensor.bin
+# Download All
+./dldtool /dev/ttyUSBx programmer.bin vela_ota.bin -m 0x2C300000/0xBE57EC1C vela_ap.bin vela_cp.bin vela_audio.bin vela_sensor.bin
+
+# M55 flash上用littlefs
+
+#  分区表
+    ota    0x2C000000 - 0x2C080000 512K
+    sst    0x2C080000 - 0x2C100000 512K // secure storage used by tee
+    tee    0x2C100000 - 0x2C300000 2M
+    ap     0x2C300000 - 0x2CC00000 8M
+    audio  0x2CC00000 - 0x2D000000 4M
+    sensor 0x342BF000 - 0x343BF000 1M  // on flash1 with cp
+
+#  data区的flash偏移, block size按照256算, data区偏移 36352*256 = 0x8E0000
+#  flash基地址 0x2C000000, 得到data区烧写地址0x2C8E0000
+#  目前sensor - 0x2CE00000, hifi4 - 0x2C400000, m55 - 0x2C000000, 都不冲突
+
+D:\work\tools\dldtool.exe 9 D:\work\tools\programmer.bin --addr 0x2c8e0000 \\wsl$\Ubuntu-20.04\home\test01\xiaomi_m1\vendor\bes\prebuild\littlefs.bin
+
+#  手动mount
+mkdir /mnt/data
+mount -t littlefs /dev/data /mnt/data
+ls /mnt/data
+

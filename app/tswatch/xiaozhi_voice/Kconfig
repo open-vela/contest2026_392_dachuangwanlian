@@ -1,0 +1,42 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config EXAMPLES_XIAOZHI_VOICE
+	tristate "Xiaozhi AI Voice App"
+	default n
+	depends on NET
+	select NETUTILS_WEBCLIENT
+	select NETUTILS_CJSON
+	select MEDIA
+	select MEDIA_SERVER
+	select GRAPHICS_LVGL
+	select LV_FONT_SIMSUN_16_CJK
+	select LIB_OPUS
+	---help---
+		Xiaozhi AI voice assistant on BES1700.
+		Connects to xiaozhi cloud via WebSocket, captures mic audio (Opus),
+		receives STT/TTS text and plays TTS audio back, and shows a
+		minimal LVGL UI (status + latest STT/TTS text).
+
+		Phase 2 (this version): OTA + wss + full dialog
+		(hello/listen/opus uplink/stt/tts/opus downlink) + LVGL UI.
+		Requires (already on for best1700 ap): NET_TCP, CRYPTO_MBEDTLS
+		for TLS.
+
+if EXAMPLES_XIAOZHI_VOICE
+
+config EXAMPLES_XIAOZHI_VOICE_PRIORITY
+	int "Xiaozhi voice task priority"
+	default 100
+
+config EXAMPLES_XIAOZHI_VOICE_STACKSIZE
+	int "Xiaozhi voice stack size"
+	default 8192
+
+config EXAMPLES_XIAOZHI_VOICE_PROGNAME
+	string "Program name"
+	default "xiaozhi"
+
+endif

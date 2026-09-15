@@ -1,148 +1,172 @@
-# contest2026_392_dachuangwanlian
-
-👋 欢迎参加 **2026 首届 openvela AI 硬件开发者大赛**！
-
-这是组委会为你的队伍创建的**专属参赛仓库**（本仓为样例/模板，队伍编号 `392`；你看到的将是你自己的 `contest2026_<编号>_<队伍名>`）。比赛期间，你的全部参赛代码、打包产物与 AI Coding 日志都提交到这里。
-
-> 本仓既是「代码仓」，又内置了一键拉取整套 openvela 工程的 `repo` 清单（manifest）。你只需跟它打交道，**自始至终只动一个文件夹**。
-
----
-
-## 一、先读这些官方文档
-
-**通用（所有赛道必读）：**
-
-| 文档                                                                                                                                     | 用途                                           |
-| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| [《大赛总览》](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/contest_overview.md)                        | 赛道、流程、评分、资源，建议先通读             |
-| [《参赛代码提交指南》](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/code_submission_guide.md)           | 仓库获取、提交流程、时间与权限（**以此为准**） |
-| [《AI Coding 日志归集与提交手册》](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/ai_coding_log_guide.md) | 如何导出 AI 对话日志并提交到 `logs/`           |
-
-**按你的赛道选读（三选一）：**
-
-| 赛道                  | 教程导航                                                                                                                                                 |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 快应用 / 手表应用创新 | [快应用教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/quickapp/quickapp_guide_index.md)                         |
-| AI 硬件产品创新       | [AI 硬件赛道教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/ai_hardware/ai_hardware_guide_index.md)              |
-| 新硬件适配            | [新硬件适配赛道教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/hardware_porting/hardware_porting_guide_index.md) |
-
----
-
-## 二、第一步：拉取完整工程
-
-用组委会提供的命令一键拉取「openvela 全量源码 + 你的专属仓」：
-
-```bash
-repo init -u https://github.com/open-vela/contest2026_392_dachuangwanlian \
-  -b dev-ai-contest-2026 -m contest2026_392_dachuangwanlian.xml
-repo sync -c -j8
-```
-
-同步后，你的整个仓库位于工作区的 `contest2026_392_dachuangwanlian/`，openvela 全量源码在外层（`nuttx/`、`apps/`、`packages/`、`vendor/` 等）。
-
----
-
-## 三、第二步：在哪里写代码
-
-**只在自己的仓目录 `contest2026_392_dachuangwanlian/` 里开发。** 不同作品形态放在对应子目录，manifest 会通过 `<linkfile>` 把它们**软链**到 openvela 编译树该在的位置——你不用手动 copy：
-
-| 作品形态 | 你的代码放这里             | 系统自动映射到                                 |
-| -------- | -------------------------- | ---------------------------------------------- |
-| 应用     | `app/hello_app/`           | `packages/demos/contest2026_392_hello_app`     |
-| 快应用   | `quickapp/hello_quickapp/` | `packages/apps/contest2026_392_hello_quickapp` |
-| 板级适配 | `board/contest_board/`     | `vendor/openvela/boards/contest2026_392_board` |
-
-> 用不到的形态目录可以删掉；新增作品时按同样规则加子目录，并在 `contest2026_392_dachuangwanlian.xml` 里补一条 `<linkfile>` 映射即可。**生产仓库（packages/nuttx/vendor 等）零改动。**
-
-建议仓库目录约定（便于评委定位）：
-
-```text
-app/ | quickapp/ | board/   # 你的作品代码
-logs/                       # AI Coding 日志（主动导出后提交，格式见 logs/README.md）
-README.md                   # 作品说明（提交前请改成你自己的，见第六节）
-```
-
-> 仓内附带了一个 `.gitignore.example`，给出了**编译产物**等不需要进仓的文件示例。如需启用，`cp .gitignore.example .gitignore` 后按需增删即可。**注意 `logs/` 下最终导出的 AI Coding 日志必须提交，不要忽略。**
->
-> `logs/` 的目录结构与提交格式见 [logs/README.md](logs/README.md)。
-
----
-
-## 四、第三步：编译与运行
-
-编译/运行步骤随作品形态不同而不同，请参考你所在赛道的教程导航：
-
-- 快应用 / 手表应用：[快应用教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/quickapp/quickapp_guide_index.md)（含模拟器与开发板部署）。
-- AI 硬件产品创新：[AI 硬件赛道教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/ai_hardware/ai_hardware_guide_index.md)（环境搭建、编译烧录、Skill 开发）。
-- 新硬件适配：[新硬件适配赛道教程导航](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/hardware_porting/hardware_porting_guide_index.md)（BSP 移植、最小 NSH 基线）。
-
-子目录已通过 manifest 中的 `<linkfile>` 软链进 openvela 编译树，因此构建在 openvela 工作区**根目录**（即你这个仓的上一级）进行。openvela 使用 `build.sh` 作为统一入口，接收一个 **board config 路径**作为参数：
-
-```bash
-# 进入 openvela 工作区根目录（你的仓的上一级）
-cd ..
-
-# 通用语法：第一个参数是 board config 路径，第二个参数可以是 menuconfig / distclean 等
-./build.sh <board-config-path> [menuconfig|distclean] [-j8]
-```
-
-> 具体的 board config 路径、目标产物、模拟器/真机部署方式请以你所在赛道的教程导航为准。本仓 `app/` `quickapp/` `board/` 三个示例骨架对应的 Kconfig 选项可通过 `menuconfig` 启用。
-
----
-
-## 五、第四步：提交作品
-
-1. **fork** 你的专属仓 → 开发 → `git commit` 并推送 → 向专属仓发起 **Pull Request**，可**自行 review 并合入**（无需等组委会）。
-2. **AI Coding 日志**：与 AI 工具的对话会自动记录到本机 staging（不会自动上传），需你**主动导出/打包**选定会话到仓内 `logs/` 目录后一并提交。详见[《AI Coding 日志归集与提交手册》](https://github.com/open-vela/docs/blob/dev-ai-contest-2026/zh-cn/contest_2026/ai_coding_log_guide.md)。
-3. 若需改动 **nuttx 等公共仓库**，不在本仓改，而是 fork 对应公共仓、以 PR 提交到 `dev-ai-contest-2026` 分支，由组委会 review 后合入。
-
-> ⏰ **提交作品截止：9 月 20 日**。截止后统一收回 push 权限，仍可查看 / clone。
->
-> 获奖后再按要求将作品 PR 至 openvela 上游对应仓库（走标准 PR + CI 流程）。
-
-### 关于 PR 与 CLA
-
-- 本仓所有改动通过 **Pull Request** 合入（分支保护强制，可自行合入自己的 PR）。
-- 首次贡献需在[**官网签署 CLA**](https://openvela.com/#/community/cla)；PR 上会自动跑 `cla/signature` 检查，在官网签署成功后，在 PR 评论 `/check-cla` 复检即可通过。
-
----
-
-## 六、提交前：把本 README 改成你的作品说明
-
-本文件目前是组委会给的**使用说明书**。**作品提交前，请把它替换成你自己作品的说明**，方便评委快速了解你做了什么、怎么跑起来。建议至少包含以下内容：
-
-```markdown
-# <你的作品名>
+# 基于 BES 2800 BP 的联网语音智能体手表
 
 ## 一、作品简介
-<一句话/一段话说明这个作品是什么、解决什么问题、亮点在哪>
+
+一款面向日常效率场景、运行在 BES 2800 BP 智能手表上的**端云协同语音 AI 智能体**，让用户通过自然语言对话即可完成信息检索与设备控制，解决小屏穿戴设备"交互繁琐、信息获取慢"的核心痛点。用户对着手表说出自然语言指令，云端 ASR 识别语音后，LLM 通过 MCP（Model Context Protocol）工具调用驱动手表端执行对应操作（闹钟、运动、秒表、计时器、心率、睡眠监测等），无需触屏，全程语音交互。
 
 ## 二、选题方向
-<快应用 / 手表应用创新 ｜ AI 硬件产品创新 ｜ 新硬件适配 ｜ 自定方向，并简述理由>
+
+**手表应用创新**
+
+选择理由：本作品核心在于将 MCP 工具调用机制落地到嵌入式手表端侧，通过端云协同架构，让云端 LLM 理解用户自然语言意图并自动路由到手表端预注册的 MCP 工具执行操作，实现真正的 AI 语音闭环控制。
 
 ## 三、目录结构
-<列出你这个仓里各目录/文件的作用，例如：>
-- `app/xxx/`        — <说明>
-- `board/xxx/`      — <说明>
-- `quickapp/xxx/`   — <说明>
-- `logs/`           — AI Coding 日志
-- `docs/` 或其他    — <说明>
 
-## 四、运行方式
-<拉取工程后，如何编译、烧录/部署、运行的完整步骤；最好能让评委照着一步步复现>
-
-## 五、AI Coding 使用说明
-<说明本作品如何借助 AI 辅助开发：
-- 在需求拆解 / 方案设计 / 编码 / 调试 / 文档等环节如何与 AI 协作；
-- AI 对开发效率或质量带来的实际帮助。
-完整对话日志见 logs/ 目录>
+```
+contest2026_392_dachuangwanlian/
+├── app/
+│   ├── tswatch/                    — 主应用（手表核心代码）
+│   │   ├── xiaozhi_voice/          — 小智 AI 语音客户端 + MCP Server
+│   │   ├── stopwatch/              — 秒表应用（支持 MCP 语音启停/重置）
+│   │   ├── clock/                  — 闹钟应用（支持 MCP 语音添加/删除闹钟）
+│   │   ├── exercise/               — 运动应用（支持 MCP 语音开始/停止运动）
+│   │   ├── heart/                  — 心率监测应用
+│   │   ├── sleep/                  — 睡眠监测应用
+│   │   ├── timer/                  — 计时器应用
+│   │   ├── settings/               — 设置应用
+│   │   ├── main_page/              — 表盘主页
+│   │   ├── applist/                — 应用列表
+│   │   ├── utils/                  — 工具函数（字体管理等）
+│   │   └── res/                    — 图片/资源文件
+│   └── hello_app/                  — 应用形态样例（占位骨架）
+├── board/
+│   ├── contest_board/              — 板级适配（defconfig 等）
+│   └── best1700_ep/                — BES1700 EP 板级支持（aos_evb 配置）
+├── quickapp/
+│   └── hello_quickapp/             — 快应用样例（占位骨架）
+├── skills/
+│   └── bes2800bp-build-flash/      — AI 辅助构建/烧录技能
+├── prebuild/                       — 恒玄开发板cmake编译必备脚本和配置
+├── logs/                           — AI Coding 对话日志
+│   └── liyc0623/                   — 按日期归档的 JSONL 日志
+├── .claude/                        — Claude Code 项目配置
+├── .github/                        — GitHub 工作流/Issue 模板
+├── contest2026_392_dachuangwanlian.xml — 大赛 manifest
+├── openvela.xml                    — OpenVela 代码仓 manifest
+└── README.md                       — 本文件
 ```
 
-> 提示：将会根据「作品本身 + 你的 README 说明 + `logs/` 里的 AI Coding 日志」来理解和评估你的作品，README 写清楚很重要。
+## 四、运行方式
 
----
+### 4.1 环境准备
 
-## 附：仓库命名规范
+**系统依赖（Ubuntu）：**
 
-`contest2026_<编号>_<队伍名>` — 编号三位零填充；队名 slug（全小写、英文/拼音、连字符）。例：`contest2026_392_dachuangwanlian`。
-（仓库由组委会统一创建，**每队仅一个仓**，无需自行命名。）
+```bash
+sudo apt install -y git cmake python3 build-essential curl bison flex cpio \
+  gperf libncurses-dev libssl-dev libgmp-dev libmpfr-dev libmpc-dev libpulse-dev
+sudo pip3 install kconfiglib
+```
+
+工具链 `arm-none-eabi-gcc` 已随仓库提供，路径 `prebuilts/gcc/linux-x86_64/arm-none-eabi/`。
+
+### 4.2 代码拉取
+
+```bash
+repo init -u https://github.com/open-vela/manifest.git -b dev-ai-contest-2026
+repo sync -j8
+```
+
+### 4.3 替换补丁文件
+
+编译前需用附件替换以下文件（所有修改在 vendor/framework 层）：
+
+| # | 文件路径 | 作用 |
+|---|---------|------|
+| 1 | `prebuild/`（解压到仓库根目录） | 恒玄开发板构建所需目录 |
+| 2 | `frameworks/multimedia/media/server/media_plugin.c` | 修复 ffmpeg 头文件缺失 |
+| 3 | `vendor/bes/boards/common/CMakeLists.txt` | 修复 up_nputs 重复定义 |
+| 4 | `vendor/bes/chips/bes/Make.defs` | 修复 up_nputs 重复定义 |
+| 5 | `vendor/bes/chips/bes/CMakeLists.txt` | 条件加宽保持一致 |
+
+### 4.4 编译
+
+**AP 核（主应用）：**
+
+```bash
+cd ..
+rm -rf cmake_out/aos_evb_ap
+./build.sh vendor/bes/boards/best1700_ep/aos_evb/configs/ap --cmake -j8
+```
+
+成功标志：输出 `#### build completed successfully`。
+
+产物：`cmake_out/aos_evb_ap/nuttx_ap.bin`（约 1.7MB）。
+
+### 4.5 烧录
+
+**增量烧录（仅更新 AP + APC1）：**
+
+```bash
+cd ..
+sudo ./prebuild/m1/dldtool --pgm-rate 2000000 /dev/ttyUSB0 \
+  ./prebuild/programmer1700_dual.bin --set-dual-chip 1 \
+  -M ./cmake_out/aos_evb_ap/nuttx_ap.bin \
+  -M ./cmake_out/aos_evb_apc1/nuttx_apc1.bin
+```
+
+**全量烧录（裸板）：** 需额外提供 bl/ota/bth/bthcp/audio 镜像，详见 `skills/bes2800bp-build-flash/references/flash-guide.md`。
+
+### 4.6 运行验证
+
+1. 串口连接板卡（USB 枚举设备），打开串口终端
+2. 复位或重新上电板卡
+3. 观察 NuttX 启动日志，出现 `nsh` 提示符即启动成功
+4. LVGL 界面显示手表表盘，点击小智语音按钮开始对话
+
+### 4.7 语音交互示例
+
+对着板子麦克风说：
+- "帮我定一个明早7点的闹钟" → MCP 调用 `self.alarm.add`
+- "开始跑步" → MCP 调用 `self.exercise.start`
+- "打开秒表" → MCP 调用 `self.stopwatch.start`
+- "暂停" → MCP 调用 `self.stopwatch.pause`
+- "打开心率" → MCP 调用 `self.heart.open`
+- "打开设置" → MCP 调用 `self.settings.open`
+
+## 五、AI Coding 使用说明
+
+### 5.1 AI 辅助开发全流程
+
+本作品全程使用 **Claude Code** 作为 AI 辅助开发工具，在以下环节深度协作：
+
+#### 需求拆解与方案设计
+
+- 使用 AI 分析小智 WebSocket 协议文档，拆解出 OTA 获取配置、wss 连接握手、音频上下行、MCP 工具调用等子任务
+- AI 辅助设计系统架构：状态机（IDLE→RECORDING→THINKING→PLAYING）、线程模型（ws_recv + audio_uplink + 主线程 UI）
+- 对比 MQTT+UDP vs WebSocket 两种协议方案，AI 提供嵌入式移植难度分析，最终选择 WebSocket 路线
+
+#### 编码实现
+
+- **自研 WebSocket 客户端**：AI 辅助基于 mbedTLS 实现 RFC6455 帧协议，约 300 行 C 代码覆盖文本帧/二进制帧收发
+- **MCP Server 框架**：AI 设计了轻量级 MCP 工具注册/分发框架（`mcp_server.c`），支持 cJSON 参数解析和回调机制
+- **MCP 工具注册**：AI 辅助将秒表、闹钟、运动等 12 个工具注册到 MCP Server，每个工具包含名称、描述、参数 schema 和回调函数
+- **音频模块封装**：AI 辅助封装 media_recorder/media_player 的 buffer 模式，实现 Opus 编解码的透明调用
+- **LVGL UI 开发**：AI 辅助设计手表界面（表盘、应用列表、语音对话界面、Listening 动画）
+
+#### 调试与问题解决
+
+- AI 辅助分析编译错误（up_nputs 重复定义、ffmpeg 头文件缺失等），提供补丁方案
+- AI 辅助调试 WebSocket 握手失败、音频帧对齐等问题
+- AI 辅助编写构建/烧录脚本（`build.sh`、`flash.sh`）
+
+#### 文档与知识管理
+
+- AI 辅助编写《编译详细指南》、《烧录详细指南》、《故障排除手册》
+- AI 维护 CodeGraph 代码图谱，确保代码修改后图谱同步更新
+
+### 5.2 AI 带来的实际帮助
+
+| 环节 | 传统方式 | AI 辅助后 | 效率提升 |
+|------|---------|----------|---------|
+| 协议分析 | 手动阅读 WebSocket RFC + 小智协议文档，耗时数天 | AI 提取关键协议帧格式，自动生成 C 结构体定义 | ~3x |
+| WebSocket 客户端 | 从零实现 RFC6455，易出帧解析 bug | AI 生成骨架代码 + 边界处理，仅需验证 | ~4x |
+| MCP 工具集成 | 手动为每个应用编写注册代码 | AI 根据头文件自动生成 12 个工具注册代码 | ~5x |
+| 编译调试 | 反复试错查日志 | AI 分析错误信息直接给出修复方案 | ~3x |
+| 文档编写 | 手动整理笔记 | AI 结构化输出完整技术文档 | ~6x |
+
+### 5.3 工具与技术栈
+
+- **AI 工具**：Claude Code（Claude Opus 模型）
+- **代码图谱**：CodeGraph（`.codegraph/` 目录，用于 xiaozhi_voice 模块的代码导航）
+- **对话日志**：完整记录见 `logs/` 目录（按日期归档的 JSONL 格式）

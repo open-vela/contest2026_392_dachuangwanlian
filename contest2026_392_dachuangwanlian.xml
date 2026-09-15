@@ -9,8 +9,9 @@
   <include name="openvela.xml"/>
 
   <project path="contest2026_392_dachuangwanlian" name="contest2026_392_dachuangwanlian">
-    <linkfile src="app/hello_app" dest="packages/demos/contest2026_392_hello_app"/>
+    <linkfile src="app/tswatch" dest="packages/demos/contest2026_392_hello_app"/>
     <linkfile src="quickapp/hello_quickapp" dest="packages/apps/contest2026_392_hello_quickapp"/>
-    <linkfile src="board/contest_board" dest="vendor/openvela/boards/contest2026_392_board"/>
+    <linkfile src="board/best1700_ep" dest="vendor/bes/boards/best1700_ep"/>
+    <linkfile src="prebuild" dest="prebuild"/>
   </project>
 </manifest>

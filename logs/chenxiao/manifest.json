@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "team_id": "contest2026_392_dachuangwanlian",
+  "github_login": "chenxiaoishand",
+  "generator": "claude-code-collector@1.3.0",
+  "updated_at": "2026-09-09T06:34:52.892Z",
+  "sessions": [
+    {
+      "session_id": "af17e6b4-b751-4675-81bc-921f3d913b8c",
+      "tool": "claude-code",
+      "started_at": "2026-09-03T10:02:15.848Z",
+      "last_event_at": "2026-09-04T03:21:33.149Z",
+      "event_count": 98,
+      "raw_event_count": 415,
+      "file_path": "logs/chenxiaoishand/2026-09-04/claude-code__af17e6b4-b751-4675-81bc-921f3d913b8c.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "mimo-v2.5"
+    },
+    {
+      "session_id": "a45d352b-00ee-44cd-a94e-ee1229600d29",
+      "tool": "claude-code",
+      "started_at": "2026-09-04T04:02:04.534Z",
+      "last_event_at": "2026-09-04T06:14:44.666Z",
+      "event_count": 66,
+      "raw_event_count": 107,
+      "file_path": "logs/chenxiaoishand/2026-09-04/claude-code__a45d352b-00ee-44cd-a94e-ee1229600d29.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "mimo-v2.5"
+    },
+    {
+      "session_id": "33a3c57d-909a-4647-8100-dd178f5fa655",
+      "tool": "claude-code",
+      "started_at": "2026-09-04T07:14:41.917Z",
+      "last_event_at": "2026-09-04T07:14:41.917Z",
+      "event_count": 28,
+      "raw_event_count": 40,
+      "file_path": "logs/chenxiaoishand/2026-09-04/claude-code__33a3c57d-909a-4647-8100-dd178f5fa655.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "mimo-v2.5"
+    },
+    {
+      "session_id": "3696dd28-47bc-4981-97af-efc5ee633869",
+      "tool": "claude-code",
+      "started_at": "2026-09-04T09:11:44.492Z",
+      "last_event_at": "2026-09-04T09:25:46.228Z",
+      "event_count": 73,
+      "raw_event_count": 109,
+      "file_path": "logs/chenxiaoishand/2026-09-04/claude-code__3696dd28-47bc-4981-97af-efc5ee633869.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "mimo-v2.5"
+    },
+    {
+      "session_id": "2d6653b0-21fb-4c63-a1b5-6ad2acc708b7",
+      "tool": "claude-code",
+      "started_at": "2026-09-04T09:37:09.201Z",
+      "last_event_at": "2026-09-04T11:10:40.929Z",
+      "event_count": 248,
+      "raw_event_count": 362,
+      "file_path": "logs/chenxiaoishand/2026-09-04/claude-code__2d6653b0-21fb-4c63-a1b5-6ad2acc708b7.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "mimo-v2.5"
+    },
+    {
+      "session_id": "37a73cbf-7491-4a3e-82df-8b31a999bab5",
+      "tool": "claude-code",
+      "started_at": "2026-09-04T12:29:44.382Z",
+      "last_event_at": "2026-09-07T03:12:32.398Z",
+      "event_count": 25,
+      "raw_event_count": 449,
+      "file_path": "logs/chenxiaoishand/2026-09-07/claude-code__37a73cbf-7491-4a3e-82df-8b31a999bab5.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "mimo-v2.5"
+    },
+    {
+      "session_id": "c21a0ffd-e54a-4c02-96f3-a1ea5f18cf2e",
+      "tool": "claude-code",
+      "started_at": "2026-09-07T03:41:34.472Z",
+      "last_event_at": "2026-09-09T06:34:52.892Z",
+      "event_count": 1,
+      "raw_event_count": 138,
+      "file_path": "logs/chenxiaoishand/2026-09-09/claude-code__c21a0ffd-e54a-4c02-96f3-a1ea5f18cf2e.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "mimo-v2.5"
+    },
+    {
+      "session_id": "c32c2dc4-2b40-4c00-9a20-4e4b94336c6d",
+      "tool": "claude-code",
+      "started_at": "2026-09-07T08:24:57.729Z",
+      "last_event_at": "2026-09-07T13:25:39.567Z",
+      "event_count": 91,
+      "raw_event_count": 160,
+      "file_path": "logs/chenxiaoishand/2026-09-07/claude-code__c32c2dc4-2b40-4c00-9a20-4e4b94336c6d.jsonl",
+      "collection_mode": "cli",
+      "health": "ok",
+      "model": "mimo-v2.5"
+    }
+  ]
+}
