@@ -11,7 +11,8 @@
   <project path="contest2026_392_dachuangwanlian" name="contest2026_392_dachuangwanlian">
     <linkfile src="app/tswatch" dest="packages/demos/contest2026_392_hello_app"/>
     <linkfile src="quickapp/hello_quickapp" dest="packages/apps/contest2026_392_hello_quickapp"/>
-    <linkfile src="board/best1700_ep" dest="vendor/bes/boards/best1700_ep"/>
-    <linkfile src="prebuild" dest="prebuild"/>
+    <linkfile src="board/best1700_ep/aos_evb/src/etc/init.d" dest="vendor/bes/boards/best1700_ep/aos_evb/src/etc/init.d"/>
+    <linkfile src="board/best1700_ep/aos_evb/configs/ap/defconfig" dest="vendor/bes/boards/best1700_ep/aos_evb/configs/ap/defconfig"/>
+    <linkfile src="board/contest_board" dest="vendor/openvela/boards/contest2026_392_board"/>
   </project>
 </manifest>

@@ -38,10 +38,14 @@ crystal_calib &
 bluetoothd &
 #endif
 
+#ifdef CONFIG_TSWATCH
+tswatch &
+#else
 #ifdef CONFIG_BESWATCH
 beswatch &
 #else
 lvgldemo widgets &
+#endif
 #endif
 
 #ifdef CONFIG_KVDB_PERSIST_PATH

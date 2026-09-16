@@ -14,7 +14,6 @@
 #include "../include/systemtime.h"
 #include "../../utils/include/circle_screen.h"
 #include "../../utils/include/font_manager.h"
-#include "../../nav_page/include/nav_page_manager.h"
 #include "../../main_page/include/watch_start.h"
 
 static uint32_t stopwatch_start_time = 0;
