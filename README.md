@@ -36,9 +36,7 @@ contest2026_392_dachuangwanlian/
 │   └── hello_quickapp/             — 快应用样例（占位骨架）
 ├── skills/
 │   └── bes2800bp-build-flash/      — AI 辅助构建/烧录技能
-├── prebuild/                       — 恒玄开发板cmake编译必备脚本和配置
 ├── logs/                           — AI Coding 对话日志
-│   └── liyc0623/                   — 按日期归档的 JSONL 日志
 ├── .claude/                        — Claude Code 项目配置
 ├── .github/                        — GitHub 工作流/Issue 模板
 ├── contest2026_392_dachuangwanlian.xml — 大赛 manifest
@@ -67,33 +65,21 @@ repo init -u https://github.com/open-vela/manifest.git -b dev-ai-contest-2026
 repo sync -j8
 ```
 
-### 4.3 替换补丁文件
-
-编译前需用附件替换以下文件（所有修改在 vendor/framework 层）：
-
-| # | 文件路径 | 作用 |
-|---|---------|------|
-| 1 | `prebuild/`（解压到仓库根目录） | 恒玄开发板构建所需目录 |
-| 2 | `frameworks/multimedia/media/server/media_plugin.c` | 修复 ffmpeg 头文件缺失 |
-| 3 | `vendor/bes/boards/common/CMakeLists.txt` | 修复 up_nputs 重复定义 |
-| 4 | `vendor/bes/chips/bes/Make.defs` | 修复 up_nputs 重复定义 |
-| 5 | `vendor/bes/chips/bes/CMakeLists.txt` | 条件加宽保持一致 |
-
-### 4.4 编译
+### 4.3 编译
 
 **AP 核（主应用）：**
 
 ```bash
 cd ..
 rm -rf cmake_out/aos_evb_ap
-./build.sh vendor/bes/boards/best1700_ep/aos_evb/configs/ap --cmake -j8
+./build.sh contest2026_392_dachuangwanlian/board/best1700_ep/aos_evb/configs/ap --cmake -j8
 ```
 
 成功标志：输出 `#### build completed successfully`。
 
 产物：`cmake_out/aos_evb_ap/nuttx_ap.bin`（约 1.7MB）。
 
-### 4.5 烧录
+### 4.4 烧录
 
 **增量烧录（仅更新 AP + APC1）：**
 
@@ -107,14 +93,14 @@ sudo ./prebuild/m1/dldtool --pgm-rate 2000000 /dev/ttyUSB0 \
 
 **全量烧录（裸板）：** 需额外提供 bl/ota/bth/bthcp/audio 镜像，详见 `skills/bes2800bp-build-flash/references/flash-guide.md`。
 
-### 4.6 运行验证
+### 4.5 运行验证
 
 1. 串口连接板卡（USB 枚举设备），打开串口终端
 2. 复位或重新上电板卡
 3. 观察 NuttX 启动日志，出现 `nsh` 提示符即启动成功
 4. LVGL 界面显示手表表盘，点击小智语音按钮开始对话
 
-### 4.7 语音交互示例
+### 4.6 语音交互示例
 
 对着板子麦克风说：
 - "帮我定一个明早7点的闹钟" → MCP 调用 `self.alarm.add`

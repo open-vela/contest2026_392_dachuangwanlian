@@ -171,7 +171,7 @@ static int wifi_scan_networks(wifi_manager_t *wifi_mgr)
         struct ether_addr bssid;
         
         */
-        memcpy(&net->bssid, &info->bssid, sizeof(net->bssid));
+        memcpy(&net->bssid, &info->essid, sizeof(net->bssid));
 
         /* 其他字段 */
         net->mode = info->mode;

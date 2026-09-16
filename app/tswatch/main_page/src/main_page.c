@@ -4,10 +4,8 @@
 
 #include "choose_dial.h"
 #include "controlCenterScreen.h"
-#include "../../notification/include/message.h"
 // #include "../../launcher/include/app_list.h"
 #include "../include/main_page.h"
-#include "../../nav_page/include/nav_page_manager.h"
 #include "../../utils/include/circle_screen.h"
 
 MainPageData *mpd = NULL;
