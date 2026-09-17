@@ -98,7 +98,13 @@ sudo ./prebuild/m1/dldtool --pgm-rate 2000000 /dev/ttyUSB0 \
 1. 串口连接板卡（USB 枚举设备），打开串口终端
 2. 复位或重新上电板卡
 3. 观察 NuttX 启动日志，出现 `nsh` 提示符即启动成功
-4. LVGL 界面显示手表表盘，点击小智语音按钮开始对话
+4. LVGL 界面显示手表表盘，用串口输入以下命令配置连接wifi:
+ifup wlan0
+wapi mode wlan0 2 
+wapi psk wlan0 xxx(密码) 3
+wapi essid wlan0 xxx(wifi名称) 1
+renew wlan0
+5. 左滑进入applist,点击进入小智AI，长按按钮开始对话
 
 ### 4.6 语音交互示例
 
