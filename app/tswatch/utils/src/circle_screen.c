@@ -22,9 +22,8 @@ lv_obj_t * get_watch_scr(void)
         lv_obj_set_style_clip_corner(watchScr, true, 0);
         lv_obj_set_scrollbar_mode(watchScr, LV_SCROLLBAR_MODE_OFF);
 
-        lv_obj_set_scroll_dir(watchScr, LV_DIR_ALL);
+        lv_obj_set_scroll_dir(watchScr, LV_DIR_LEFT | LV_DIR_RIGHT);
         lv_obj_set_scroll_snap_x(watchScr, LV_SCROLL_SNAP_CENTER);
-        lv_obj_clear_flag(watchScr, LV_OBJ_FLAG_SCROLLABLE);
     }
     return watchScr;
 }

@@ -135,6 +135,7 @@ CONFIG_ELF=y
 CONFIG_ENTER_SLEEP_NO_FRAMES=y
 CONFIG_ETC_ROMFS=y
 CONFIG_EVENT_FD=y
+CONFIG_TIMER_FD=y
 CONFIG_EXAMPLES_HELLO=y
 # CONFIG_EXAMPLES_LVGLDEMO is not set
 CONFIG_TSWATCH=y
@@ -194,6 +195,8 @@ CONFIG_LIBUV=y
 CONFIG_LIBUV_EXTENSION=y
 CONFIG_LIB_CURL_CA_PATH="/resource/misc/ssl/curl"
 CONFIG_LIB_CURL_PTHREAD_STACKSIZE=16384
+CONFIG_LIB_FFMPEG=y
+CONFIG_LIB_FFMPEG_CONFIGURATION="--disable-inline-asm --enable-avcodec --enable-avdevice --enable-avfilter --enable-avformat --enable-decoder='aac,libopus,mp3,pcm_s16le' --enable-demuxer='aac,mp3,pcm_s16le,mov,ogg,wav' --enable-encoder='libopus,pcm_s16le' --enable-indev=nuttx --enable-filter='adevsrc,adevsink,afade,amix,amovie_async,amoviesink_async,astreamselect,aresample,volume' --enable-libopus --enable-muxer='opus,opusraw,pcm_s16le,wav' --enable-outdev=nuttx --enable-parser='aac' --enable-protocol='file,rpmsg,unix' --enable-swresample --tmpdir='/log'"
 CONFIG_LIB_GLIB=y
 CONFIG_LIB_JPEG_TURBO=y
 CONFIG_LIB_OPUS=y
@@ -237,6 +240,10 @@ CONFIG_LV_USE_NUTTX=y
 CONFIG_LV_USE_NUTTX_TOUCHSCREEN=y
 CONFIG_LV_USE_QRCODE=y
 CONFIG_MEDIA=y
+CONFIG_MEDIA_FOCUS=y
+CONFIG_MEDIA_LOG_SLIENT=y
+CONFIG_MEDIA_SERVER=y
+CONFIG_MEDIA_SERVER_CPUNAME="ap"
 CONFIG_MEDIA_TOOL=y
 CONFIG_MM_HEAP_MEMPOOL_THRESHOLD=256
 CONFIG_MQ_MAXMSGSIZE=64
