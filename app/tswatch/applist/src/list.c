@@ -10,6 +10,7 @@
 #include "../../settings/include/setting.h"    /* 设置 settings_app_start() */
 #include "../../main_page/include/watch_start.h" /* nav_enter_app() */
 #include "../../utils/include/font_manager.h"  /* 中文显示字体 */
+#include "../../images/images.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
@@ -17,7 +18,7 @@
 /* ========== 应用列表定义 ========== */
 typedef struct {
     const char *name;
-    const char *icon;       /* 外置图标资源路径（/emmc/xxx.png，运行时从 emmc 加载） */
+    const lv_image_dsc_t *icon;  /* 编译内置图标 */
     uint32_t    icon_bg;    /* 图标容器背景色（hex，运行时转 lv_color_t） */
     uint32_t    icon_color; /* 图标容器/按下态边框前景色（hex） */
     void      (*launch_cb)(void);
@@ -36,14 +37,14 @@ static void launch_settings(void)   { nav_enter_app(); settings_app_start(); }
 #define APP_COUNT   8
 static app_item_t apps[APP_COUNT] = {
     /*  name      icon                            icon_bg     icon_color   launch           */
-    { "语音助手", "/emmc/icon_ai.png",       0x6C5CE7, 0x6C5CE7,   launch_ai        },
-    { "闹钟",   "/emmc/icon_alarm.png",          0xFFA502, 0xFFA502,   launch_alarm     },
-    { "秒表",   "/emmc/icon_stopwatch.png",      0x00CEC9, 0x00CEC9,   launch_stopwatch },
-    { "倒计时", "/emmc/icon_timer.png",          0x4A90E2, 0x4A90E2,   launch_timer     },
-    { "心率",   "/emmc/icon_heart.png",      0xFF6B6B, 0xFF6B6B,   launch_heart      },
-    { "睡眠",   "/emmc/icon_sleep.png",          0x8B7CF6, 0x8B7CF6,   launch_sleep        },
-    { "运动",   "/emmc/icon_exercise.png",          0x00B894, 0x00B894,   launch_exercise         },
-    { "设置",   "/emmc/icon_settings.png",      0x636E72, 0x636E72,   launch_settings  },
+    { "语音助手", &icon_ai,       0x6C5CE7, 0x6C5CE7,   launch_ai        },
+    { "闹钟",   &icon_alarm,          0xFFA502, 0xFFA502,   launch_alarm     },
+    { "秒表",   &icon_stopwatch,      0x00CEC9, 0x00CEC9,   launch_stopwatch },
+    { "倒计时", &icon_timer,          0x4A90E2, 0x4A90E2,   launch_timer     },
+    { "心率",   &icon_heart,      0xFF6B6B, 0xFF6B6B,   launch_heart      },
+    { "睡眠",   &icon_sleep,          0x8B7CF6, 0x8B7CF6,   launch_sleep        },
+    { "运动",   &icon_exercise,          0x00B894, 0x00B894,   launch_exercise         },
+    { "设置",   &icon_settings,      0x636E72, 0x636E72,   launch_settings  },
 };
 
 /* ========== 设计规范 (来自 watch-design) ========== */

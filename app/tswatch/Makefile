@@ -36,6 +36,7 @@ CSRCS += $(wildcard utils/src/*.c)  $(wildcard utils/res/*.c)
 #CSRCS += $(wildcard quicks/src/*.c) $(wildcard quicks/res/*.c)
 #CSRCS += $(wildcard quick_balloon/src/*.c) $(wildcard quick_balloon/res/*.c)
 CSRCS += $(wildcard xiaozhi_voice/*.c)
+CSRCS += $(wildcard images/*.c)
 
 MAINSRC = watch_main.c
 $(info 当前路径是：$(shell pwd))
@@ -81,6 +82,7 @@ VPATH  += clock/src clock/res
 # VPATH  += quick_balloon/src quick_balloon/res
 
 CFLAGS +=-Ixiaozhi_voice
+CFLAGS +=-Iimages
 CFLAGS +=-I$(APPDIR)/../external/opus/opus/include
 VPATH  += xiaozhi_voice
 endif

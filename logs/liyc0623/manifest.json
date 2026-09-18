@@ -3,7 +3,7 @@
   "team_id": "contest2026_000_openvela",
   "github_login": "liyc0623",
   "generator": "claude-code-collector@1.3.0",
-  "updated_at": "2026-09-17T13:00:56.022Z",
+  "updated_at": "2026-09-18T03:21:37.030Z",
   "sessions": [
     {
       "session_id": "53fba42a-5944-4290-8316-211b498ac375",
@@ -703,10 +703,10 @@
       "session_id": "cef32631-81c0-43da-b239-c980606e2b49",
       "tool": "claude-code",
       "started_at": "2026-09-17T01:52:47.351Z",
-      "last_event_at": "2026-09-17T13:00:55.994Z",
-      "event_count": 2082,
-      "raw_event_count": 2975,
-      "file_path": "logs/liyc0623/2026-09-17/claude-code__cef32631-81c0-43da-b239-c980606e2b49.jsonl",
+      "last_event_at": "2026-09-18T03:21:36.989Z",
+      "event_count": 109,
+      "raw_event_count": 3368,
+      "file_path": "logs/liyc0623/2026-09-18/claude-code__cef32631-81c0-43da-b239-c980606e2b49.jsonl",
       "collection_mode": "cli",
       "health": "ok",
       "model": "mimo-v2.5"
