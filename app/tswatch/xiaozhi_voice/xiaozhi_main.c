@@ -43,6 +43,7 @@
 #include "../sleep/include/sleep.h"
 #include "../timer/include/timer_main.h"
 #include "../settings/include/setting.h"
+#include "../images/images.h"
 
 /* watch_main.c 中的全局停止标记，清理后跳过 lv_timer_handler 规避崩溃 */
 extern volatile bool g_lvgl_stop_rendering;
@@ -768,7 +769,7 @@ void recognize_anim_start(lv_obj_t *parent)
         s_circle_container = NULL;
         return;
     }
-    lv_image_set_src(s_circle_bg_img, "/emmc/success_check.png");
+    lv_image_set_src(s_circle_bg_img, &success_check);
     lv_obj_align(s_circle_bg_img, LV_ALIGN_CENTER, 0, 0);
     lv_obj_remove_flag(s_circle_bg_img, LV_OBJ_FLAG_CLICKABLE);
 
@@ -1366,7 +1367,7 @@ void playing_anim_start(lv_obj_t *parent)
         s_success_bg = NULL;
         return;
     }
-    lv_image_set_src(s_success_icon, "/emmc/success_check.png");
+    lv_image_set_src(s_success_icon, &success_check);
     lv_obj_align(s_success_icon, LV_ALIGN_CENTER, 0, 0);
 
 }
@@ -1481,11 +1482,11 @@ struct __attribute__((packed)) xz_binary_hdr_s
 #define XZ_STATE_DONE       7     /* turn finished */
 #define XZ_STATE_ERROR      8     /* error */
 
-/* 按钮图片路径定义 */
-#define VOICE_BTN_CONNECTING  "/emmc/voice_button_connecting.png"
-#define VOICE_BTN_READY       "/emmc/voice_button_ready.png"
-#define VOICE_BTN_LISTENING   "/emmc/voice_button_listening.png"
-#define VOICE_BTN_RECOGNIZING "/emmc/voice_button_recognizing.png"
+/* 按钮图片资源（编译内置） */
+#define VOICE_BTN_CONNECTING  (&voice_button_connecting)
+#define VOICE_BTN_READY       (&voice_button_ready)
+#define VOICE_BTN_LISTENING   (&voice_button_listening)
+#define VOICE_BTN_RECOGNIZING (NULL)  /* 无此图片资源 */
 
 /****************************************************************************
  * Private Types

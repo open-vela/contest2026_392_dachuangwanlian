@@ -7,6 +7,7 @@
 // #include "../../launcher/include/app_list.h"
 #include "../include/main_page.h"
 #include "../../utils/include/circle_screen.h"
+#include "../../images/images.h"
 
 MainPageData *mpd = NULL;
 

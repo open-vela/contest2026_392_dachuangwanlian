@@ -46,6 +46,7 @@ if(CONFIG_TSWATCH)
                                ${TSWATCH_DIR}/exercise/res/*.c)
   file(GLOB UTILS_SRCS         ${TSWATCH_DIR}/utils/src/*.c
                                ${TSWATCH_DIR}/utils/res/*.c)
+  file(GLOB IMAGE_SRCS         ${TSWATCH_DIR}/images/*.c)
   file(GLOB XIAOZHI_VOICE_SRCS ${TSWATCH_DIR}/xiaozhi_voice/*.c)
 
   set(CSRCS
@@ -59,6 +60,7 @@ if(CONFIG_TSWATCH)
       ${HEART_SRCS}
       ${EXERCISE_SRCS}
       ${UTILS_SRCS}
+      ${IMAGE_SRCS}
       ${XIAOZHI_VOICE_SRCS}
   )
   set(MAINSRC watch_main.c)
@@ -75,6 +77,7 @@ if(CONFIG_TSWATCH)
       ${TSWATCH_DIR}/heart/include
       ${TSWATCH_DIR}/exercise/include
       ${TSWATCH_DIR}/utils/include
+      ${TSWATCH_DIR}/images
       ${TSWATCH_DIR}/xiaozhi_voice
       ${NUTTX_APPS_DIR}/external/opus/opus/include
   )
