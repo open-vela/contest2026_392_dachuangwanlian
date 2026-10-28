@@ -4,8 +4,8 @@
 #include "main_page.h"
 #include "../../applist/include/list.h"
 #include "../../xiaozhi_voice/xiaozhi_voice.h"
+#include "../../spp_audio/include/spp_audio_stream.h"
 #include "../../utils/include/font_manager.h"
-#include "../../images/images.h"
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
@@ -47,6 +47,12 @@ static lv_obj_t *watch_face_create(lv_obj_t *parent);
 static void power_btn_async_cb(void *arg)
 {
     (void)arg;
+    /* 录音进行中：电源键优先停止 SPP 录音流（需求：固件power键结束录音）。 */
+    if (spp_audio_stream_is_active()) {
+        LV_LOG_USER("Power button: stopping SPP audio stream");
+        spp_audio_stream_stop();
+        return;
+    }
     if (mpd && !strcmp(mpd->current_page, HOME_PAGE)) {
         LV_LOG_USER("Power button: opening xiaozhi_voice");
         nav_enter_app_from(PAGE_HOME);
@@ -274,7 +280,7 @@ static lv_obj_t *watch_face_create(lv_obj_t *parent)
 
     /* 表盘底图 */
     g_ui.dail = lv_image_create(root);
-    lv_image_set_src(g_ui.dail, &test);
+    lv_image_set_src(g_ui.dail, "/emmc/test.bin");
     lv_obj_center(g_ui.dail);
 
 
@@ -282,15 +288,15 @@ static lv_obj_t *watch_face_create(lv_obj_t *parent)
      * 指针图从 /emmc/ 加载，lv_obj_center 居中（图中点对齐表盘中心）。
      * pivot 取图中心(w/2,h/2)=表盘中心，绕中心旋转。zoom 在 timer 首帧设。 */
     g_ui.hour_hand = lv_image_create(root);
-    lv_image_set_src(g_ui.hour_hand, &hour_hand_1);
+    lv_image_set_src(g_ui.hour_hand, "/emmc/hour_hand_1.png");
     lv_obj_center(g_ui.hour_hand);
 
     g_ui.minute_hand = lv_image_create(root);
-    lv_image_set_src(g_ui.minute_hand, &minute_hand_1);
+    lv_image_set_src(g_ui.minute_hand, "/emmc/minute_hand_1.png");
     lv_obj_center(g_ui.minute_hand);
 
     g_ui.second_hand = lv_image_create(root);
-    lv_image_set_src(g_ui.second_hand, &second_hand_1);
+    lv_image_set_src(g_ui.second_hand, "/emmc/second_hand_1.png");
     lv_obj_center(g_ui.second_hand);
 
     /* 指针层级: 时针在最下, 分针中间, 秒针最上 (创建顺序即层级) */

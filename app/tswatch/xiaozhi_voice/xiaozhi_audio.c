@@ -75,6 +75,9 @@ struct xiaozhi_audio_s
 
 static struct xiaozhi_audio_s g_audio;
 
+/* PCM tee callback (NULL = disabled). Set via xiaozhi_audio_set_pcm_tee(). */
+static xiaozhi_pcm_tee_cb_t g_pcm_tee_cb = NULL;
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -107,6 +110,11 @@ struct xiaozhi_audio_s *xiaozhi_audio_init(void)
   opus_encoder_ctl(a->opus_encoder, OPUS_SET_PACKET_LOSS_PERC(0));
 
   return a;
+}
+
+void xiaozhi_audio_set_pcm_tee(xiaozhi_pcm_tee_cb_t cb)
+{
+  g_pcm_tee_cb = cb;
 }
 
 int xiaozhi_audio_start_capture(struct xiaozhi_audio_s *a)
@@ -200,6 +208,15 @@ ssize_t xiaozhi_audio_read_opus(struct xiaozhi_audio_s *a,
       a->rms_sq_sum += (uint64_t)(v * v);
     }
   a->rms_samples += frame_samples;
+
+  /* PCM tee: forward raw PCM to any registered consumer (e.g. SPP audio
+   * streaming). Runs in the capture thread; the consumer must be
+   * non-blocking (e.g. just post the data to another thread). */
+  if (g_pcm_tee_cb)
+    {
+      g_pcm_tee_cb(a->pcm_buf, (size_t)frame_samples,
+                   XZ_OPUS_SAMPLE_RATE, XZ_OPUS_CHANNELS);
+    }
 
   encoded_bytes = opus_encode(a->opus_encoder,
                               a->pcm_buf,

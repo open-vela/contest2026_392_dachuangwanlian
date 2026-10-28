@@ -43,7 +43,7 @@
 #include "../sleep/include/sleep.h"
 #include "../timer/include/timer_main.h"
 #include "../settings/include/setting.h"
-#include "../images/images.h"
+#include "../recorder/include/recorder_app.h"
 
 /* watch_main.c 中的全局停止标记，清理后跳过 lv_timer_handler 规避崩溃 */
 extern volatile bool g_lvgl_stop_rendering;
@@ -174,6 +174,10 @@ static int mcp_send_json(cJSON *msg)
   cJSON_AddItemToObject(wrapper, "payload", payload);
 
   int ret = send_json(s_mcp_app, wrapper);
+  char *log_str = cJSON_PrintUnformatted(payload);
+  printf("[mcp] send resp ret=%d: %s\n", ret,
+         log_str ? log_str : "(null)");
+  free(log_str);
   cJSON_Delete(wrapper);
   return ret;
 }
@@ -453,6 +457,38 @@ static cJSON *mcp_tool_settings_open(const cJSON *args)
   return cJSON_CreateString("ok");
 }
 
+/* 语音指令「开启录音」：关闭小智并跳转到录音 App 立即开始录音。
+ * 该回调在 WebSocket 接收线程执行，UI 操作必须投到 LVGL 线程。 */
+static void recorder_open_async_cb(void *arg)
+{
+  (void)arg;
+
+  /* 关闭小智：隐藏 UI、停止 ws/音频/各线程，并同步释放 MIC。
+   * 必须先于 recorder 打开 MIC，否则硬件冲突。 */
+  xiaozhi_voice_delete();
+
+  /* 等待小智 connect_thread 退出并 join recv_thread，确保 ws/网络栈资源
+   * 彻底释放（与右滑退出手势一致；MIC 已在 delete 中同步 close）。 */
+  usleep(100 * 1000);
+
+  /* 进入录音 App（prev 记为 APPLIST，右滑返回时回到应用列表）。 */
+  nav_enter_app_from(PAGE_APPLIST);
+  recorder_start();
+  recorder_start_recording();   /* 打开即开始录音 */
+
+  /* xiaozhi_voice_delete 停掉了 LVGL 渲染，重建录音 UI 后必须恢复，
+   * 否则屏幕不刷新。 */
+  extern volatile bool g_lvgl_stop_rendering;
+  g_lvgl_stop_rendering = false;
+}
+
+static cJSON *mcp_tool_recorder_open(const cJSON *args)
+{
+  printf("[xiaozhi] mcp_tool_recorder_open\n");
+  lv_async_call(recorder_open_async_cb, NULL);
+  return cJSON_CreateString("ok");
+}
+
 /* Register all MCP tools. Called once during dialog init. */
 
 static void mcp_register_tools(void)
@@ -518,6 +554,11 @@ static void mcp_register_tools(void)
                       "打开设置应用",
                       NULL,
                       mcp_tool_settings_open);
+
+  mcp_server_add_tool("self.recorder.open",
+                      "打开录音应用并立即开始录音，同时关闭小智语音助手",
+                      NULL,
+                      mcp_tool_recorder_open);
 }
 
 /****************************************************************************
@@ -769,7 +810,7 @@ void recognize_anim_start(lv_obj_t *parent)
         s_circle_container = NULL;
         return;
     }
-    lv_image_set_src(s_circle_bg_img, &success_check);
+    lv_image_set_src(s_circle_bg_img, "/emmc/success_check.png");
     lv_obj_align(s_circle_bg_img, LV_ALIGN_CENTER, 0, 0);
     lv_obj_remove_flag(s_circle_bg_img, LV_OBJ_FLAG_CLICKABLE);
 
@@ -1367,7 +1408,7 @@ void playing_anim_start(lv_obj_t *parent)
         s_success_bg = NULL;
         return;
     }
-    lv_image_set_src(s_success_icon, &success_check);
+    lv_image_set_src(s_success_icon, "/emmc/success_check.png");
     lv_obj_align(s_success_icon, LV_ALIGN_CENTER, 0, 0);
 
 }
@@ -1482,11 +1523,11 @@ struct __attribute__((packed)) xz_binary_hdr_s
 #define XZ_STATE_DONE       7     /* turn finished */
 #define XZ_STATE_ERROR      8     /* error */
 
-/* 按钮图片资源（编译内置） */
-#define VOICE_BTN_CONNECTING  (&voice_button_connecting)
-#define VOICE_BTN_READY       (&voice_button_ready)
-#define VOICE_BTN_LISTENING   (&voice_button_listening)
-#define VOICE_BTN_RECOGNIZING (NULL)  /* 无此图片资源 */
+/* 按钮图片路径定义 */
+#define VOICE_BTN_CONNECTING  "/emmc/voice_button_connecting.png"
+#define VOICE_BTN_READY       "/emmc/voice_button_ready.png"
+#define VOICE_BTN_LISTENING   "/emmc/voice_button_listening.png"
+#define VOICE_BTN_RECOGNIZING "/emmc/voice_button_recognizing.png"
 
 /****************************************************************************
  * Private Types
@@ -1783,6 +1824,9 @@ static void *recv_thread(void *arg)
       if (is_binary)
         {
           /* Server TTS Opus frame -> feed to player. */
+
+          printf("[xiaozhi] <<< [binary opus frame] %u bytes\n",
+                 (unsigned int)plen);
           if (app->tts_playing)
             {
               xiaozhi_audio_write_opus(app->audio, payload, plen);
@@ -1807,6 +1851,16 @@ static void *recv_thread(void *arg)
             cJSON *type = cJSON_GetObjectItem(root, "type");
             const char *tstr = cJSON_IsString(type) ?
               type->valuestring : "";
+
+            /* 打印服务器回传的所有文本消息（截断防极端长文本刷屏） */
+
+            int log_len = (int)plen;
+            if (log_len > 2048)
+              {
+                log_len = 2048;
+              }
+            printf("[xiaozhi] <<< [text %u bytes] %.*s\n",
+                   (unsigned int)plen, log_len, json);
 
             if (strcmp(tstr, "stt") == 0)
               {
@@ -2888,17 +2942,38 @@ static void ui_refresh_timer_cb(lv_timer_t *timer)
  * WiFi连接线程 - 后台执行避免阻塞UI
  ****************************************************************************/
 
+/* 小智自动连接使用的 WiFi 凭据。
+ * 注意：当前工程没有持久化保存用户 WiFi 配置的机制，这里使用默认值。
+ * TODO: 后续应从用户在"设置->WiFi"中保存的配置读取（例如连接成功后写入
+ *       NVRAM/文件，并由此处读取），避免硬编码。 */
+// #define XIAOZHI_WIFI_SSID "ZTE-kSQCKP-5G"
+// #define XIAOZHI_WIFI_PSK  "12345678"
+#define XIAOZHI_WIFI_SSID "Cauchy_Mate_80"
+#define XIAOZHI_WIFI_PSK  "wangxinyi2018"
+
 static void *wifi_connect_thread(void *arg)
 {
   (void)arg;
+
+  /* 先检查 WiFi 是否已经连上并拿到有效 IP。
+   * 若已就绪（如用户已在设置界面连过、或上次小智已连好），则无需重新
+   * 发起连接，直接标记就绪返回，避免重复 ifup/essid/renew 造成的打断。 */
+  struct in_addr ip_addr;
+  if (netlib_get_ipv4addr("wlan0", &ip_addr) == 0 &&
+      ip_addr.s_addr != 0)
+    {
+      LV_LOG_USER("[xiaozhi] WiFi already connected, skip reconnect");
+      s_wifi_ready = true;
+      return NULL;
+    }
 
   system("ifup wlan0");
   usleep(100000);                   /* 等待100ms */
   system("wapi mode wlan0 2");      /* 设置为station模式 */
   usleep(50000);
-  system("wapi psk wlan0 12345678 3");  /* 设置密码 */
+  system("wapi psk wlan0 " XIAOZHI_WIFI_PSK " 3");  /* 设置密码 */
   usleep(50000);
-  system("wapi essid wlan0 ZTE-kSQCKP-5G 1");  /* 设置SSID */
+  system("wapi essid wlan0 " XIAOZHI_WIFI_SSID " 1");  /* 设置SSID */
   usleep(100000);
   system("ifup wlan0");             /* 再次启动确保连接 */
   usleep(300000);                   /* 等待300ms让WiFi连接 */
@@ -2906,7 +2981,6 @@ static void *wifi_connect_thread(void *arg)
 
   /* 等待真正的IP地址就绪，而不是用固定延时。
    * DHCP可能需要数秒才能完成，固定延时会导致DNS失败和重连循环。 */
-  struct in_addr ip_addr;
   int ip_wait;
   for (ip_wait = 0; ip_wait < 30 && g_app.app_running; ip_wait++)
     {

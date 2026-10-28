@@ -23,6 +23,22 @@
 /* Opaque handle -- actual struct lives in xiaozhi_audio.c. */
 struct xiaozhi_audio_s;
 
+/* PCM "tee" callback: invoked from the capture thread for every captured
+ * PCM frame, so other modules (e.g. SPP audio streaming) can consume the
+ * same raw PCM that is also being Opus-encoded for the xiaozhi server.
+ * Runs in the capture (xiaozhi) thread; keep it short and non-blocking.
+ *
+ * @param pcm          16-bit PCM samples (interleaved if channels>1)
+ * @param samples      number of samples in pcm (total, across all channels)
+ * @param sample_rate  capture rate in Hz (16000)
+ * @param channels     channel count (1 = mono)
+ */
+typedef void (*xiaozhi_pcm_tee_cb_t)(const int16_t *pcm, size_t samples,
+                                     uint32_t sample_rate, uint8_t channels);
+
+/* Register / clear (NULL) the PCM tee callback. */
+void xiaozhi_audio_set_pcm_tee(xiaozhi_pcm_tee_cb_t cb);
+
 /****************************************************************************
  * Public Function Prototypes
  ****************************************************************************/

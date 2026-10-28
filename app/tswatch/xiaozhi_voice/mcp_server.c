@@ -65,6 +65,8 @@ int mcp_server_add_tool(const char *name,
   tool->callback = callback;
 
   g_mcp.tool_count++;
+  printf("[mcp] tool registered: '%s' (total=%d)\n", name,
+         g_mcp.tool_count);
   return 0;
 }
 
@@ -95,6 +97,7 @@ int mcp_server_handle_message(const cJSON *msg,
   cJSON *payload = cJSON_GetObjectItem(msg, "payload");
   if (!cJSON_IsObject(payload))
     {
+      printf("[mcp] handle_message: no 'payload' object, ignore\n");
       return -1;
     }
 
@@ -106,6 +109,8 @@ int mcp_server_handle_message(const cJSON *msg,
   if (cJSON_IsString(method))
     {
       const char *method_name = method->valuestring;
+
+      printf("[mcp] handle_message: method='%s'\n", method_name);
 
       if (strcmp(method_name, "initialize") == 0)
         {
@@ -156,6 +161,8 @@ int mcp_server_handle_message(const cJSON *msg,
           int t;
           for (t = 0; t < g_mcp.tool_count; t++)
             {
+              printf("[mcp] tools/list -> expose tool[%d]: '%s'\n",
+                     t, g_mcp.tools[t].name);
               cJSON *tool_obj = cJSON_CreateObject();
               cJSON_AddStringToObject(tool_obj, "name",
                                       g_mcp.tools[t].name);
@@ -198,12 +205,34 @@ int mcp_server_handle_message(const cJSON *msg,
           const char *tool_name = cJSON_IsString(name_item) ?
                                   name_item->valuestring : "";
 
+          printf("[mcp] tools/call: name='%s'\n", tool_name);
+
+          if (args_item != NULL)
+            {
+              char *args_str = cJSON_PrintUnformatted(args_item);
+              printf("[mcp] tools/call: args=%s\n",
+                     args_str ? args_str : "(null)");
+              free(args_str);
+            }
+          else
+            {
+              printf("[mcp] tools/call: args=(none)\n");
+            }
+
           struct mcp_tool_s *tool = find_tool(tool_name);
           cJSON *tool_result = NULL;
 
           if (tool != NULL)
             {
+              printf("[mcp] tools/call: tool found, invoking callback...\n");
               tool_result = tool->callback(args_item);
+              printf("[mcp] tools/call: callback returned %s\n",
+                     tool_result ? "non-NULL" : "NULL");
+            }
+          else
+            {
+              printf("[mcp] tools/call: ERROR tool '%s' NOT registered!\n",
+                     tool_name);
             }
 
           /* Build MCP tools/call response with content array. */
@@ -250,6 +279,7 @@ int mcp_server_handle_message(const cJSON *msg,
           cJSON_AddItemToObject(resp, "result", result);
 
           int ret = send_json_cb(resp);
+          printf("[mcp] tools/call: response sent, ret=%d\n", ret);
           cJSON_Delete(resp);
 
           if (tool_result != NULL)
@@ -263,6 +293,16 @@ int mcp_server_handle_message(const cJSON *msg,
         {
           return 0;
         }
+      else
+        {
+          printf("[mcp] handle_message: UNKNOWN method '%s', dropped\n",
+                 method_name);
+        }
+    }
+  else
+    {
+      printf("[mcp] handle_message: payload has no string 'method', "
+             "dropped\n");
     }
 
   return -1;

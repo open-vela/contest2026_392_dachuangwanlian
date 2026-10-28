@@ -5,6 +5,9 @@
 #include "watch_start.h"
 #include "utils/include/circle_screen.h"
 #include "utils/include/font_manager.h"
+#include "bt/include/bt_manager.h"
+#define TSW_LOG_TAG "main_page"
+#include "tsw_log.h"   /* tswatch 统一日志: TSW_LOGE/W/I/D, 用法见头文件 */
 
 /* 当 xiaozhi_voice 清理完成后置为 true，主循环跳过 lv_timer_handler
  * 以避免 TLSF 堆损坏导致的必现 MMFAR=0x15c 崩溃。 */
@@ -30,6 +33,8 @@ volatile bool g_lvgl_stop_rendering = false;
 //     lv_nuttx_uv_deinit(&data);
 // }
 
+/* tsw_log 用法示例 (首次集成验证, 后续各模块可直接照抄使用):
+ * #define TSW_LOG_TAG "xxx"  // include tsw_log.h 之前定义, 输出按模块过滤 */
 int main(int argc, FAR char* argv[])
 {
     // init lvgl
@@ -38,8 +43,15 @@ int main(int argc, FAR char* argv[])
     //uv_loop_t ui_loop;
     //lv_memset(&ui_loop, 0, sizeof(uv_loop_t));
 
+    /* tsw_log 自检: 启动时各打印一条, 串口立刻可见 */
+    TSW_LOGI("tswatch start, argc=%d", argc);
+    TSW_LOGW("this is a WARN sample");
+    TSW_LOGE("this is an ERROR sample");
+    /* DEBUG 与 hexdump 默认不输出, 需要:
+     *   tsw_log_set_level(TSW_LOG_LEVEL_DEBUG); */
+
     if (lv_is_initialized()) {
-        LV_LOG_ERROR("LVGL already initialized! aborting.");
+        TSW_LOGE("LVGL already initialized! aborting.");
         return -1;
     }
 
@@ -49,13 +61,17 @@ int main(int argc, FAR char* argv[])
     lv_nuttx_init(&info, &result);
 
     if (result.disp == NULL) {
-        LV_LOG_ERROR("lv_demos initialization failure!");
+        TSW_LOGE("lv_nuttx_init failure: no display!");
         return 1;
     }
     font_manager_init();
 
     lv_obj_clear_flag(lv_screen_active(), LV_OBJ_FLAG_SCROLLABLE);
     watch_start();
+
+    /* 开机启动蓝牙子系统: 自动连接已配对设备 / 未连接时保持可发现可配对 /
+     * 连接成功后关闭可发现 / 提供手表<->手机 SPP 数据通道(详见 bt/include) */
+    bt_manager_start();
 
     // refresh lvgl ui
     //lv_nuttx_uv_loop(&ui_loop, &result);
